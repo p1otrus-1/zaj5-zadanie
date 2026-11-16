@@ -51,3 +51,19 @@ def test_apartment_costs_with_optional_parameters():
 
     costs = manager.get_apartment_costs('apart-polanka')
     assert costs == 3532.0
+
+def test_apartment_not_exist():
+    parameters = Parameters()
+    manager = Manager(parameters)
+    assert manager.get_apartment_costs("non-existant", 2026, 11) == None
+
+def test_no_bills():
+    parameters = Parameters()
+    manager = Manager(parameters)
+    assert manager.get_apartment_costs("apart-polanka", 2026, 11) == 0.0
+
+def test_bills_sum():
+    parameters = Parameters()
+    manager = Manager(parameters)
+    assert manager.get_apartment_costs("apart-polanka", 2025, 1) == 910.0
+    

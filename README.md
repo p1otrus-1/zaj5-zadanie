@@ -1,4 +1,4 @@
-# NIP rent
+# NI rent
 
 Aplikacja do rozliczania najmowanych mieszkań.
 
