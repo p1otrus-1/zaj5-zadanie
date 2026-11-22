@@ -1,5 +1,5 @@
 
-
+import pytest
 from src.manager import Manager
 from src.models import Parameters
 from src.models import Bill
@@ -66,4 +66,15 @@ def test_bills_sum():
     parameters = Parameters()
     manager = Manager(parameters)
     assert manager.get_apartment_costs("apart-polanka", 2025, 1) == 910.0
+    
+def test_wrong_month():
+    parameters = Parameters()
+    manager = Manager(parameters)
+    with pytest.raises(Exception) as e_info:
+        manager.get_apartment_costs("apart-polanka", 2025, 13)
+
+#==============TDD - krok 4==============
+def test_apartment_settlement():
+    parameters = Parameters()
+    manager = Manager(parameters)
     
