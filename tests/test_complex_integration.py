@@ -1,7 +1,7 @@
 
 import pytest
 from src.manager import Manager
-from src.models import Parameters
+from src.models import ApartmentSettlement, Parameters
 from src.models import Bill
 
 
@@ -71,10 +71,51 @@ def test_wrong_month():
     parameters = Parameters()
     manager = Manager(parameters)
     with pytest.raises(Exception) as e_info:
-        manager.get_apartment_costs("apart-polanka", 2025, 13)
+        _ = manager.get_apartment_costs("apart-polanka", 2025, 13)
 
 #==============TDD - krok 4==============
+
 def test_apartment_settlement():
     parameters = Parameters()
     manager = Manager(parameters)
+    
+    #month with bills
+    apartment = "apart-polanka"
+    year = 2025
+    month = 1
+    settlement = manager.get_apartment_settlement(apartment, year, month)
+    
+    assert type(settlement) == ApartmentSettlement
+
+    assert settlement.total_bills_pln == 910.0
+
+    assert settlement.total_rent_pln == 4200.0
+
+    assert settlement.total_due_pln == 5110.0
+
+    #apartment, year, month in object
+    assert settlement.apartment == apartment
+
+    assert settlement.year == year
+
+    assert settlement.month == month
+    
+    #month without bills
+    settlement = manager.get_apartment_settlement("apart-polanka",2025,10)
+    assert settlement.total_bills_pln == 0
+
+    assert settlement.total_rent_pln == 0
+
+    assert settlement.total_due_pln == 0
+
+    #invalid apartment name
+    with pytest.raises(Exception) as e_info:
+        _ = manager.get_apartment_settlement("non-existant", 2025, 1)
+
+    #invalid month
+    with pytest.raises(Exception) as e_info:
+        _ = manager.get_apartment_settlement("apart-polanka", 2025, 13)
+
+    
+
     
