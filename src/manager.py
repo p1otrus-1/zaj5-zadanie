@@ -1,4 +1,4 @@
-from src.models import Apartment, ApartmentSettlement, Bill, Parameters, Tenant, Transfer
+from src.models import Apartment, ApartmentSettlement, Bill, Parameters, Tenant, TenantSettlement, Transfer
 
 
 class Manager:
@@ -56,8 +56,44 @@ class Manager:
                 if bill.settlement_month == month and bill.settlement_year == year:
                     if bill.type == "rent":
                         total_rent += bill.amount_pln
-                    total_bills += bill.amount_pln
+                    else:
+                        total_bills += bill.amount_pln
         total_due = total_rent + total_bills
         
         
         return ApartmentSettlement(apartment=apartment_key, month=month, year=year, total_rent_pln=total_rent, total_bills_pln=total_bills, total_due_pln=total_due)
+
+    def get_tenant_settlement(self, apartment_settlement: ApartmentSettlement, tenant_name: str, year: int, month: int)-> TenantSettlement | None:
+        tenant = tenant_name
+        apartment_str = f"{apartment_settlement.apartment}-{year}-{month}"
+        rent = 0
+        nr_tenants = 0
+        
+        for tenant in self.tenants.values():
+            if tenant.apartment == apartment_settlement.apartment:
+                nr_tenants += 1
+            if tenant.name == tenant_name:
+                rent += tenant.rent_pln
+        if nr_tenants == 0:
+            return None
+        bills = 0
+        for bill in self.bills:
+            if bill.apartment == apartment_settlement.apartment:
+                if bill.settlement_month == month and bill.settlement_year == year:
+                    if bill.type == "rent":
+                        rent += bill.amount_pln / nr_tenants
+                    else:
+                        bills += bill.amount_pln / nr_tenants
+        total_due = rent + bills
+        balance = 0
+
+        return TenantSettlement(
+            tenant=tenant_name,
+            apartment_settlement= apartment_str,
+            month=month,
+            year=year,
+            rent_pln=rent,
+            bills_pln=bills,
+            total_due_pln=total_due,
+            balance_pln=balance
+        )
