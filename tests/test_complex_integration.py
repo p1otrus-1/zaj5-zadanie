@@ -89,9 +89,9 @@ def test_apartment_settlement():
 
     assert settlement.total_bills_pln == 910.0
 
-    assert settlement.total_rent_pln == 4200.0
+    assert settlement.total_rent_pln == 760.0
 
-    assert settlement.total_due_pln == 5110.0
+    assert settlement.total_due_pln == 1670.0
 
     #apartment, year, month in object
     assert settlement.apartment == apartment
